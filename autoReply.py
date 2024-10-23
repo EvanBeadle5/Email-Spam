@@ -27,19 +27,20 @@ body = '\n'.join(lines)
 # Number of spam e-mails sent
 iterations = int(input('Enter the number of times you would like the email sent: '))
 
-#Create a multipart email
-message = MIMEMultipart()
-message['From'] = sender_email
-message['To'] = recpient_email
-message['Subject'] = subject
-message.attach(MIMEText(body, 'plain'))
-
 try:
     # connect to the server and send the email
     with smtplib.SMTP_SSL(smtp_server, port) as server:
         server.login(sender_email, app_pass)
         #send the email for 'iteration' number of times
         for index in range(iterations):
+            #Construct the email
+            message = MIMEMultipart()
+            message['From'] = sender_email
+            message['To'] = recpient_email
+            message['Subject'] = subject + str(index)
+            message.attach(MIMEText(body, 'plain'))
+
+            #Send the email 
             server.sendmail(sender_email, recpient_email, message.as_string())
         server.quit()
     print('Email sent successfully')
